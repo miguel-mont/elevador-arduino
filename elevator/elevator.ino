@@ -4,8 +4,8 @@
 #include <EEPROM.h>
 
 //Pins a los que está conectado el motor
-int motorPin1 = 12;
-int motorPin2 = 13; 
+int motorPin1 = 22;
+int motorPin2 = 23; 
 
 int upcheck;
 int downcheck;
@@ -84,22 +84,22 @@ void loop() {
   }
 
   //marca los botones como prendidos
-  if(!digitalRead(2)) {
+  if(!digitalRead(8)) {
     up[0] = true;
   }
-  if(!digitalRead(3)) {
+  if(!digitalRead(9)) {
     down[1] = true;
   }
-  if(!digitalRead(4)) {
+  if(!digitalRead(10)) {
     up[1] = true;
   }
-  if(!digitalRead(5)) {
+  if(!digitalRead(11)) {
     down[2] = true;
   }
-  if(!digitalRead(6)) {
+  if(!digitalRead(12)) {
     up[2] = true;
   }
-  if(!digitalRead(7)) {
+  if(!digitalRead(13)) {
     down[3] = true;
   }
 
