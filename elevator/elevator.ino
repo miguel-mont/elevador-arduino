@@ -22,11 +22,6 @@ int dir = 0; //0 es detenido, 1 es arriba, 2 es abajo
 bool up[4] = {false,false,false,false};
 bool down[4] = {false,false,false,false};
 
-
-//PRIMER PISO ES 10,000
-//SEGUNDO PISO ES 20,000
-//TERCER PISO ES 30,000
-
 void setup() {
   //inicializar pins como output
   pinMode(motorPin1, OUTPUT); 
@@ -93,16 +88,16 @@ void loop() {
     up[0] = true;
   }
   if(!digitalRead(3)) {
-    up[1] = true;
-  }
-  if(!digitalRead(4)) {
     down[1] = true;
   }
+  if(!digitalRead(4)) {
+    up[1] = true;
+  }
   if(!digitalRead(5)) {
-    up[2] = true;
+    down[2] = true;
   }
   if(!digitalRead(6)) {
-    down[2] = true;
+    up[2] = true;
   }
   if(!digitalRead(7)) {
     down[3] = true;
