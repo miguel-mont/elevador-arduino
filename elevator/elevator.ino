@@ -3,6 +3,11 @@
 #include <binary.h>
 #include <EEPROM.h>
 
+//7 segment library
+#include "SevSeg.h"
+
+SevSeg sevseg;
+
 //Pins a los que está conectado el motor
 int motorPin1 = 22;
 int motorPin2 = 23; 
@@ -21,18 +26,31 @@ int dir = 0; //0 es detenido, 1 es arriba, 2 es abajo
 
 bool up[4] = {false,false,false,false};
 bool down[4] = {false,false,false,false};
+bool internal[4] = {false, false, false, false};
 
 void setup() {
   //inicializar pins como output
   pinMode(motorPin1, OUTPUT); 
   pinMode(motorPin2, OUTPUT);  
 
+  byte numDigits = 1;
+  byte digitPins[] = {};
+  byte segmentPins[] = {28, 29, 34, 33, 32, 27, 26, 35};
+  bool resistorsOnSegments = true; // 'false' means resistors are on digit pins
+  byte hardwareConfig = COMMON_CATHODE; // See README.md for options
+  bool updateWithDelays = false; // Default 'false' is Recommended
+  bool leadingZeros = false; // Use 'true' if you'd like to keep the leading zeros
+  bool disableDecPoint = false; // Use 'true' if your decimal point doesn't exist or isn't connected. Then, you only need to specify 7 segmentPins[]
+
+  sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments,
+  updateWithDelays, leadingZeros, disableDecPoint);
+
   //Initiate Serial communication.
   Serial.begin(9600);
 }
 
 void loop() {
-//  Serial.println(up[0]);
+//  Serial.println(digitalRead(8));
 //  Serial.println(up[1]);
 //  Serial.println(up[2]);
 //  Serial.println(down[1]);
@@ -44,25 +62,33 @@ void loop() {
 
   if(height == 0) {
     piso = 0;
+    sevseg.setNumber(1);
+    sevseg.refreshDisplay();
   }
   else if(height == 3000) {
     piso = 1;
+    sevseg.setNumber(2);
+    sevseg.refreshDisplay();
   }
   else if(height == 6000) {
     piso = 2;
+    sevseg.setNumber(3);
+    sevseg.refreshDisplay();
   }
   else if(height == 9000) {
     piso = 3;
+    sevseg.setNumber(4);
+    sevseg.refreshDisplay();
   }
 
   Serial.print("FLOOR: ");
-  Serial.print(piso);
+  Serial.print(piso+1);
   Serial.print("\t");
   Serial.print("TARGET: ");
   Serial.print(target);
   Serial.print("\t");
-  Serial.print("HEIGHT: ");
-  Serial.print(height);
+  Serial.print("DIR: ");
+  Serial.print(dir);
   Serial.println();
   
   if(piso == target) {
