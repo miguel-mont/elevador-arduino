@@ -95,12 +95,12 @@ void loop() {
     if(dir == 1) {
       up[piso] = 0;
       stopMove();
-      delay(5000);
+      openDoors();
     }
     else if(dir == 2) {
       down[piso] = 0;
       stopMove();
-      delay(5000);
+      openDoors();
     }
     else {
       up[piso] = 0;
@@ -155,6 +155,14 @@ gencheck = genCheck();
   }
   moveDir(dir);
 }
+
+void openDoors() {
+  digitalWrite(51, HIGH);
+  Serial.println("LED");
+  delay(1000);
+  digitalWrite(51, LOW);
+}
+
 
 void moveDir(int dir) {
   if(dir == 1) {
