@@ -3,16 +3,11 @@
 #include <binary.h>
 #include <EEPROM.h>
 
-//7 segment library
-#include "SevSeg.h"
-
-SevSeg sevseg;
-
 //Pins a los que está conectado el motor
 int motorPin1 = 22;
 int motorPin2 = 23; 
 
-int doorLed = 53;
+
 char message[] = "1234";
 
 int upcheck;
@@ -32,6 +27,14 @@ int b3 = 51;
 int b4 = 52;
 int abrir = 53;
 
+//pins de indicadores de piso
+int p1 = 40;
+int p2 = 41;
+int p3 = 42;
+int p4 = 43;
+int doorLed = 44;
+
+
 int piso = 0;
 int target = 0;
 int dir = 0; //0 es detenido, 1 es arriba, 2 es abajo
@@ -45,18 +48,12 @@ bool internal[4] = {false, false, false, false};
 void setup() {
   //inicializar pins como output
   pinMode(motorPin1, OUTPUT); 
-  pinMode(motorPin2, OUTPUT);  
-
-  byte numDigits = 4;
-  byte digitPins[] = {44, 45, 46, 47};
-  byte segmentPins[] = {40, 41, 38, 39, 37, 36, 34};
-  bool resistorsOnSegments = false; // 'false' means resistors are on digit pins
-  byte hardwareConfig = COMMON_ANODE; // See README.md for options
-  bool updateWithDelays = false; // Default 'false' is Recommended
-  bool leadingZeros = false; // Use 'true' if you'd like to keep the leading zeros
-  bool disableDecPoint = true; // Use 'true' if your decimal point doesn't exist or isn't connected. Then, you only need to specify 7 segmentPins[]
-
-//  sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments);
+  pinMode(motorPin2, OUTPUT); 
+  pinMode(p1, OUTPUT); 
+  pinMode(p2, OUTPUT); 
+  pinMode(p3, OUTPUT); 
+  pinMode(p4, OUTPUT); 
+  pinMode(doorLed, OUTPUT); 
 
   //Initiate Serial communication.
   Serial.begin(9600);
@@ -101,24 +98,34 @@ void loop() {
     dirChar = 'd';
   }
 
-    if(digitalRead(piso1)) {
+  if(digitalRead(piso1)) {
+    digitalWrite(p1, HIGH);
+    digitalWrite(p2, LOW);
+    digitalWrite(p3, LOW);
+    digitalWrite(p4, LOW);
     piso = 0;
-//    sevseg.setChars("abcd");
   }
   else if(digitalRead(piso2)) {
+    digitalWrite(p2, HIGH);
+    digitalWrite(p1, LOW);
+    digitalWrite(p3, LOW);
+    digitalWrite(p4, LOW);
     piso = 1;
-//    sevseg.setChars(message);
   }
   else if(digitalRead(piso3)) {
+    digitalWrite(p3, HIGH);
+    digitalWrite(p1, LOW);
+    digitalWrite(p2, LOW);
+    digitalWrite(p4, LOW);
     piso = 2;
-//    sevseg.setChars(message);
   }
   else if(digitalRead(piso4)) {
+    digitalWrite(p4, HIGH);
+    digitalWrite(p1, LOW);
+    digitalWrite(p2, LOW);
+    digitalWrite(p3, LOW);
     piso = 3;
-//    sevseg.setChars(message);
   }
-
-//  sevseg.refreshDisplay();
 
   Serial.print("FLOOR: ");
   Serial.print(piso+1);
@@ -213,7 +220,6 @@ void loop() {
 
 void openDoors() {
   digitalWrite(doorLed, HIGH);
-  Serial.println("LED");
   delay(1000);
   while(!digitalRead(abrir))
   {
@@ -237,17 +243,17 @@ void moveDir(int dir) {
 }
 
 int genCheck() {
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i <= 3; i++) {
     if(internal[i] == 1) {
       return i;
     }
   }
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i <= 3; i++) {
     if(up[i] == 1) {
       return i;
     }
   }
-  for(int i = 3; i > 0; i--) {
+  for(int i = 3; i >= 0; i--) {
     if(down[i] == 1) {
       return i;
     }
