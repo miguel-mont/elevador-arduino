@@ -191,6 +191,7 @@ void loop() {
   if(!digitalRead(b4)) {
     internal[3] = true;
   }
+ 
   upcheck = upCheck(piso);
   downcheck = downCheck(piso);
   gencheck = genCheck();
